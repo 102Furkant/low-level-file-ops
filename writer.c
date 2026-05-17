@@ -14,8 +14,13 @@ int main(int argc, char *argv[]) {
 	int fd = open(argv[1], O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd == -1) display_err_msg("in main() while opening the file");
 	
-	if (write(fd, argv[2], strlen(argv[2])) == -1) display_err_msg("in main() while writing string to the file");
-
+	ssize_t written_byte = write(fd, argv[2], strlen(argv[2]));
+	if (written_byte = -1) display_err_msg("In main() while writing to the file");
+	if (written_byte != strlen(argv[2]) {
+		perror("FATAL ERROR!! In main() while writing to the file\n");
+		printf("Only \%zu of the string could be written to the file\n", (written_byte * 100) / strlen(argv[2]); 
+		exit(-1);
+	}
 	if (close(fd) == -1) display_err_msg("in main() while closing the file");
 
 	printf("String has been written to %s\n", argv[1]);
@@ -25,12 +30,12 @@ int main(int argc, char *argv[]) {
 
 void usage(const char *prog_name) {
 	printf("Usage: %s <filename> \"<string to be written to the file>\"\n", prog_name);
-	exit(0);
+	exit(EXIT_SUCCESS);
 }
 
 void display_err_msg(const char *msg) {
 	char err_msg[256] = "FATAL ERROR!! ";
 	strncat(err_msg, msg, 242);
 	perror(err_msg);
-	exit(-1);
+	exit(EXIT_FAILURE);
 }
