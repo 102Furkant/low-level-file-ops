@@ -21,7 +21,16 @@ int main(int argc, char *argv[]) {
 	ssize_t read_byte = 0;
 
 	while ((read_byte = read(fd, buff, sizeof(buff))) > 0) {
-		if (write(1, buff, read_byte) == -1) display_err_msg("In main() while writing to the terminal");
+		ssize_t to_write_byte = read_byte;
+		char *location_at_buff = buff;
+
+		while (to_write_byte > 0) {
+			ssize_t written_byte = write(1, location_at_buff, to_write_byte);
+			if (written_byte == -1) display_err_msg("In main() while writing to the terminal");
+			to_write_byte -= written_byte;
+			location_at_buff += written_byte;
+		}
+	
 	}
 
 	if (read_byte == -1) display_err_msg("In main() while reading the file");
